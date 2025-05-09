@@ -1,0 +1,16 @@
+{
+    "applicant_name": "Rushi\n",
+    "college_name": "IIT Bombay\n",
+    "welcome_message": "Yes",
+    "vehicle_model": "ABCD",
+    "vehicle_price": "1000000",
+    "primary_driver": "someelse",
+    "vehicle_use": "someelse",
+    "applicant_age": "22",
+    "applicant_gender": "male",
+    "native_place": "Mumbai",
+    "marital_status": "Yes",
+    "number_of_children": "Yes",
+    "profession_type": "No",
+    "driving_experience_years": "11\n"
+}
