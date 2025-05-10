@@ -1,19 +1,20 @@
-Category,Question,Output
-Personal Information,What is your name?,applicant_name
-Personal Information,Which college are you from?,college_name
-Welcome,"Hello, I am calling from {your collage name}, am I speaking with {your name}?",welcome_message
-Vehicle Information,Please confirm the make and model of the vehicle.,vehicle_model
-,And What is the approximate Road Price?,vehicle_price
-,Will you be driving it yourself or is it for someone else?,"primary_driver, vehicle_use"
-Personal Information,Your Age Please?,applicant_age
-,What is your Gender?,applicant_gender
-,What is your Hometown?,native_place
-,Are you married?,"marital_status, number_of_children"
-Profiling - Experience,Are you a full-time driver?,profession_type
-,"How many years have you been driving professionally, particularly in Bangalore?",driving_experience_years
-,Have you driven similar vehicles like the <Vehicle Model> before? What kinds of vehicles have you driven?,vehicle_experience_type
-,"Roughly, how many days in a month do you drive?",monthly_driving_days
-,And How many hours do you typically drive each day?,daily_driving_hours
-,"During a typical day of driving, do you often feel tired?",experience_of_fatigue
-,Do you have any health conditions that could affect your ability to drive safely?,health_conditions_impacting_driving
-Profiling - Past vehicle,"Do you currently own the vehicle you drive, or is it rented?","vehicle_ownership_status, vehicle_registration_number, current_vehicle_disposal_plan, current_vehicle_purchase_method, vehicle_odometer_reading, vehicle_rental_amount, rental_payment_method"
+Category,Question,Output,Condition
+Personal Information,What is your name?,applicant_name,
+Personal Information,Which college are you from?,college_name,
+Welcome,"Hello, I am calling from {your college name}, am I speaking with {your name}?",welcome_message,
+Vehicle Information,Please confirm the make and model of the vehicle.,vehicle_model,
+Vehicle Information,And what is the approximate road price?,vehicle_price,
+Vehicle Information,Will you be driving it yourself or is it for someone else?,"primary_driver, vehicle_use",
+Personal Information,Your age please?,applicant_age,
+Personal Information,What is your gender?,applicant_gender,
+Personal Information,What is your hometown?,native_place,
+Personal Information,Are you married?,"marital_status, number_of_children",True,
+Personal Information,How many children do you have?,"number_of_children","marital_status == 'Yes'",
+Profiling - Experience,Are you a full-time driver?,profession_type,
+Profiling - Experience,How many years have you been driving professionally, particularly in Bangalore?,driving_experience_years,
+Profiling - Experience,Have you driven similar vehicles like the <Vehicle Model> before? What kinds of vehicles have you driven?,vehicle_experience_type,
+Profiling - Experience,Roughly, how many days in a month do you drive?,monthly_driving_days,
+Profiling - Experience,And how many hours do you typically drive each day?,daily_driving_hours,
+Profiling - Experience,During a typical day of driving, do you often feel tired?,experience_of_fatigue,
+Profiling - Experience,Do you have any health conditions that could affect your ability to drive safely?,health_conditions_impacting_driving,
+Profiling - Past Vehicle,Do you currently own the vehicle you drive, or is it rented?,"vehicle_ownership_status, vehicle_registration_number, current_vehicle_disposal_plan, current_vehicle_purchase_method, vehicle_odometer_reading, vehicle_rental_amount, rental_payment_method",
