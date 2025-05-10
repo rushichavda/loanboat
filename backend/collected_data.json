@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "applicant_name": "Rushi\n",
     "college_name": "IIT Bombay\n",
     "welcome_message": "Yes",
@@ -13,4 +14,21 @@
     "number_of_children": "Yes",
     "profession_type": "No",
     "driving_experience_years": "11\n"
+=======
+    "applicant_name": "uday",
+    "college_name": "iit",
+    "welcome_message": "no",
+    "vehicle_model": "yes",
+    "vehicle_price": "2",
+    "primary_driver": "",
+    "vehicle_use": "2",
+    "applicant_gender": "2",
+    "native_place": "2",
+    "marital_status": "Yes",
+    "number_of_children": 2,
+    "profession_type": "2",
+    "vehicle_experience_type": "2",
+    "daily_driving_hours": "2",
+    "health_conditions_impacting_driving": "2"
+>>>>>>> c52f5516b534e7234f7c65683295156c5033de3d
 }

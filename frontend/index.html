@@ -1,67 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Loan Profiling Chat</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 20px;
+            background-color: #f5f7fa;
         }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 40px;
+        }
+
         #chatbox {
-            border: 1px solid #ddd;
-            padding: 20px;
+            border: 1px solid #ccc;
+            padding: 15px;
             width: 100%;
+            max-width: 800px;
             height: 400px;
-            overflow-y: scroll;
-            background-color: #f9f9f9;
+            overflow-y: auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
-        .user-msg, .bot-msg {
-            margin: 10px;
-        }
-        .user-msg {
-            text-align: right;
-            color: blue;
-        }
-        .bot-msg {
-            text-align: left;
-            color: green;
-        }
-        #response-input {
-            width: 100%;
+
+        .message {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
             padding: 10px;
-            margin-top: 10px;
+            border-radius: 15px;
+            font-size: 16px;
+            line-height: 1.5;
         }
-        button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
+
+        .user-msg {
+            background-color: #3b8ad9;
             color: white;
+            align-self: flex-end;
+            border-radius: 20px 20px 0 20px;
+        }
+
+        .bot-msg {
+            background-color: #ebf5f0;
+            color: #444;
+            align-self: flex-start;
+            border-radius: 20px 20px 20px 0;
+        }
+
+        .avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .input-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        textarea {
+            width: 100%;
+            max-width: 650px;
+            height: 60px;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            resize: none;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            border-color: #3b8ad9;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #3b8ad9;
+            color: white;
+            font-size: 16px;
             border: none;
+            border-radius: 10px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3278b3;
+        }
+
+        .typing-indicator {
+            font-style: italic;
+            color: #888;
+            margin-left: 10px;
         }
     </style>
 </head>
 <body>
     <h1>Loan Profiling Chat</h1>
-    <div id="chatbox">
-        <!-- Chat messages will appear here -->
+    <div id="chatbox"></div>
+
+    <div class="input-area">
+        <textarea id="response-input" placeholder="Type your response..."></textarea>
+        <button onclick="sendMessage()">Send</button>
     </div>
-    <textarea id="response-input" placeholder="Your response..."></textarea><br>
-    <button onclick="sendMessage()">Send</button>
 
     <script>
         let conversationStarted = false;
+        const apiBaseUrl = 'http://localhost:5001'; // Update if deployed elsewhere
 
         function speakText(text) {
+            window.speechSynthesis.cancel(); // Cancel previous speech
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
             speechSynthesis.speak(utterance);
         }
 
         function startConversation() {
-            fetch('http://localhost:5001/start')
+            fetch(`${apiBaseUrl}/start`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.question) {
@@ -69,42 +143,73 @@
                         speakText(data.question);
                         conversationStarted = true;
                     }
+                })
+                .catch(() => {
+                    displayMessage('Error connecting to server. Please try again later.', 'bot');
                 });
         }
 
         function sendMessage() {
-            const userMessage = document.getElementById('response-input').value;
-            if (!userMessage.trim()) return;
+            const input = document.getElementById('response-input');
+            const userMessage = input.value.trim();
+            if (!userMessage) return;
 
             displayMessage(userMessage, 'user');
+            input.value = '';
 
-            fetch('http://localhost:5001/respond', {
+            displayTypingIndicator();
+
+            fetch(`${apiBaseUrl}/respond`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ response: userMessage })
             })
             .then(response => response.json())
             .then(data => {
-                const botReply = data.question || data.message;
-                if (botReply) {
-                    displayMessage(botReply, 'bot');
-                    speakText(botReply);  // <-- Speak the displayed message
+                removeTypingIndicator();
+                if (data.question) {
+                    displayMessage(data.question, 'bot');
+                    speakText(data.question);
+                } else if (data.message) {
+                    displayMessage(data.message, 'bot');
+                    speakText(data.message);
                 }
+            })
+            .catch(() => {
+                removeTypingIndicator();
+                displayMessage('There was an error processing your message.', 'bot');
             });
-
-            document.getElementById('response-input').value = '';
         }
 
         function displayMessage(message, sender) {
             const chatbox = document.getElementById('chatbox');
             const msgDiv = document.createElement('div');
-            msgDiv.classList.add(sender === 'user' ? 'user-msg' : 'bot-msg');
-            msgDiv.textContent = message;
+            msgDiv.classList.add('message', sender === 'user' ? 'user-msg' : 'bot-msg');
+            msgDiv.innerHTML = `
+                <img class="avatar" src="${sender === 'user' ? 'https://via.placeholder.com/35' : 'https://via.placeholder.com/35?text=B'}" alt="${sender}">
+                <span>${message}</span>
+            `;
             chatbox.appendChild(msgDiv);
             chatbox.scrollTop = chatbox.scrollHeight;
         }
 
-        // Start conversation when page loads
+        function displayTypingIndicator() {
+            const chatbox = document.getElementById('chatbox');
+            const typingIndicator = document.createElement('div');
+            typingIndicator.classList.add('typing-indicator');
+            typingIndicator.id = 'typing-indicator';
+            typingIndicator.textContent = 'Bot is typing...';
+            chatbox.appendChild(typingIndicator);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
         window.onload = () => {
             if (!conversationStarted) {
                 startConversation();
